@@ -102,7 +102,7 @@ export function ImageEditor({ open, source, onApply, onCancel }: ImageEditorProp
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onCancel()}>
-      <DialogContent className="max-h-[95dvh] gap-3 overflow-hidden sm:max-w-xl">
+      <DialogContent className="max-h-[95dvh] gap-3 overflow-y-auto sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>Bild zuschneiden</DialogTitle>
         </DialogHeader>

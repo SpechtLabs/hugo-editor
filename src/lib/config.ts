@@ -19,6 +19,8 @@ export const config = {
     name: env("GITHUB_REPO_NAME", "GoldSpecht"),
     branch: env("GITHUB_REPO_BRANCH", "main"),
   },
+  /** Public URL of the live website (for the "view site" link). */
+  siteUrl: env("SITE_URL", "https://gold-specht.de"),
   /** Path, within the repo, of the Hugo data file holding the gallery. */
   galleryDataPath: env("GALLERY_DATA_PATH", "data/de/portfolio.yml"),
   /** Dotted key path to the item array inside that YAML document. */

@@ -124,28 +124,47 @@ export function GalleryEditor({ initialItems, login, liveUrl }: GalleryEditorPro
     });
   }
 
-  async function handleAdd(values: ItemFormValues, imageBase64?: string): Promise<boolean> {
-    if (!imageBase64) {
+  async function handleAdd(
+    values: ItemFormValues,
+    image?: { base64: string; ext: string },
+  ): Promise<boolean> {
+    if (!image) {
       toast.error("Kein Bild ausgewählt");
       return false;
     }
     const result = await runAction(
-      () => addGalleryItem({ ...values, imageBase64, position: "start" }),
+      () =>
+        addGalleryItem({
+          ...values,
+          imageBase64: image.base64,
+          ext: image.ext,
+          position: "start",
+        }),
       { success: `„${values.name}" hinzugefügt`, onSuccess: (items) => setRows(toRows(items)) },
     );
     return result.ok;
   }
 
-  async function handleEdit(values: ItemFormValues): Promise<boolean> {
+  async function handleEdit(
+    values: ItemFormValues,
+    image?: { base64: string; ext: string },
+  ): Promise<boolean> {
     if (!editRow) return false;
     const prev = rows;
     const index = prev.findIndex((r) => r.uid === editRow.uid);
-    const { image } = editRow.item;
+    const { image: currentImage } = editRow.item;
     setRows(
       prev.map((r) => (r.uid === editRow.uid ? { ...r, item: { ...r.item, ...values } } : r)),
     );
     const result = await runAction(
-      () => updateGalleryItem({ index, expectImage: image, ...values }),
+      () =>
+        updateGalleryItem({
+          index,
+          expectImage: currentImage,
+          ...values,
+          newImageBase64: image?.base64,
+          newImageExt: image?.ext,
+        }),
       {
         success: "Änderungen gespeichert",
         onSuccess: (items) => setRows(toRows(items)),
@@ -241,6 +260,9 @@ export function GalleryEditor({ initialItems, login, liveUrl }: GalleryEditorPro
         onOpenChange={(open) => !open && setEditUid(null)}
         suggestions={suggestions}
         initial={editInitial}
+        currentImageSrc={
+          editRow ? `/api/image?src=${encodeURIComponent(editRow.item.image)}` : undefined
+        }
         onSubmit={handleEdit}
       />
 

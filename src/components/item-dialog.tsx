@@ -3,6 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { CategoryPicker } from "@/components/category-picker";
+import { ImageField } from "@/components/image-field";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,7 +16,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { UploadDropzone } from "@/components/upload-dropzone";
 import { blobToBase64, type ProcessedImage } from "@/lib/image/process";
 
 export interface ItemFormValues {
@@ -33,8 +33,10 @@ export interface ItemDialogProps {
   onOpenChange: (open: boolean) => void;
   suggestions: string[];
   initial?: ItemFormValues;
+  /** Edit mode: proxy URL of the entry's current image, for re-cropping. */
+  currentImageSrc?: string;
   /** Returns true on success (dialog then closes). */
-  onSubmit: (values: ItemFormValues, imageBase64?: string) => Promise<boolean>;
+  onSubmit: (values: ItemFormValues, image?: { base64: string; ext: string }) => Promise<boolean>;
 }
 
 export function ItemDialog({
@@ -43,6 +45,7 @@ export function ItemDialog({
   onOpenChange,
   suggestions,
   initial,
+  currentImageSrc,
   onSubmit,
 }: ItemDialogProps) {
   const [values, setValues] = useState<ItemFormValues>(initial ?? EMPTY);
@@ -69,8 +72,10 @@ export function ItemDialog({
     if (!canSubmit) return;
     setSubmitting(true);
     try {
-      const imageBase64 = processed ? await blobToBase64(processed.blob) : undefined;
-      const ok = await onSubmit(values, imageBase64);
+      const image = processed
+        ? { base64: await blobToBase64(processed.blob), ext: processed.ext }
+        : undefined;
+      const ok = await onSubmit(values, image);
       if (ok) onOpenChange(false);
     } finally {
       setSubmitting(false);
@@ -90,7 +95,17 @@ export function ItemDialog({
         </DialogHeader>
 
         <div className="space-y-4">
-          {mode === "add" && <UploadDropzone onChange={setProcessed} disabled={submitting} />}
+          <ImageField
+            currentSrc={mode === "edit" ? currentImageSrc : undefined}
+            onChange={setProcessed}
+            disabled={submitting}
+          />
+          {mode === "edit" && (
+            <p className="text-xs text-muted-foreground">
+              Tippe auf „Zuschneiden", um Ausschnitt, Zoom oder Drehung zu ändern, oder „Anderes
+              Bild" für ein neues Foto.
+            </p>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="item-name">Name</Label>

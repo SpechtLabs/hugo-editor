@@ -6,7 +6,7 @@ import { requireGitHub } from "@/lib/github/client";
 import { commitChanges, type FileChange } from "@/lib/github/commit";
 import { getGalleryFile } from "@/lib/github/gallery";
 import { newImagePaths, yamlImageToRepoPath } from "@/lib/portfolio/paths";
-import { ItemFormSchema, type PortfolioItem } from "@/lib/portfolio/schema";
+import { ItemFormSchema, type ItemPatch, type PortfolioItem } from "@/lib/portfolio/schema";
 import {
   addItem,
   readItems,
@@ -43,6 +43,7 @@ export interface AddInput {
   categories: string[];
   link: string;
   imageBase64: string;
+  ext: string;
   position?: "start" | "end";
 }
 
@@ -54,7 +55,7 @@ export async function addGalleryItem(input: AddInput): Promise<ActionResult> {
     const { octokit, repo } = await requireGitHub();
     const { text } = await getGalleryFile(octokit, repo);
 
-    const { repoPath, yamlImage } = newImagePaths(form.name, shortId(), imagePrefixes);
+    const { repoPath, yamlImage } = newImagePaths(form.name, shortId(), imagePrefixes, input.ext);
     const newText = addItem(
       text,
       { ...form, image: yamlImage },
@@ -80,6 +81,9 @@ export interface UpdateInput {
   content: string;
   categories: string[];
   link: string;
+  /** Optional replacement image (cropped/rotated), committed and swapped in. */
+  newImageBase64?: string;
+  newImageExt?: string;
 }
 
 export async function updateGalleryItem(input: UpdateInput): Promise<ActionResult> {
@@ -88,15 +92,42 @@ export async function updateGalleryItem(input: UpdateInput): Promise<ActionResul
     const { octokit, repo } = await requireGitHub();
     const { text } = await getGalleryFile(octokit, repo);
 
-    const newText = updateItemAt(
-      text,
-      input.index,
-      { name: form.name, content: form.content, categories: form.categories, link: form.link },
-      { expectImage: input.expectImage, itemsPath: config.galleryItemsKeyPath },
-    );
-    const res = await commitChanges(octokit, repo, `gallery: edit "${form.name}"`, [
-      { path: config.galleryDataPath, content: newText, encoding: "utf-8" },
-    ]);
+    const patch: ItemPatch = {
+      name: form.name,
+      content: form.content,
+      categories: form.categories,
+      link: form.link,
+    };
+    const changes: FileChange[] = [];
+
+    if (input.newImageBase64) {
+      const { repoPath, yamlImage } = newImagePaths(
+        form.name,
+        shortId(),
+        imagePrefixes,
+        input.newImageExt ?? "webp",
+      );
+      patch.image = yamlImage;
+      changes.push({ path: repoPath, content: input.newImageBase64, encoding: "base64" });
+    }
+
+    const newText = updateItemAt(text, input.index, patch, {
+      expectImage: input.expectImage,
+      itemsPath: config.galleryItemsKeyPath,
+    });
+    changes.push({ path: config.galleryDataPath, content: newText, encoding: "utf-8" });
+
+    // Drop the old image file if nothing else still points at it.
+    if (input.newImageBase64) {
+      const stillUsed = itemsFrom(newText).some((it) => it.image === input.expectImage);
+      const oldPath = yamlImageToRepoPath(input.expectImage, imagePrefixes);
+      const dir = config.imageDir.replace(/\/+$/, "");
+      if (!stillUsed && oldPath.startsWith(`${dir}/`)) {
+        changes.push({ path: oldPath, delete: true });
+      }
+    }
+
+    const res = await commitChanges(octokit, repo, `gallery: edit "${form.name}"`, changes);
     revalidatePath("/");
     return { ok: true, items: itemsFrom(newText), commitUrl: res.commitUrl };
   } catch (err) {

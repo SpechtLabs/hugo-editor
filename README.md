@@ -17,7 +17,8 @@ read/write access to a private repo.
 
 ```
 Browser (the editor UI)
-  pick a photo → decode (incl. iPhone HEIC) → resize → re-encode as .webp, all client-side
+  pick a photo → crop / zoom / rotate (touch) → decode (incl. iPhone HEIC) → resize →
+    re-encode as .webp (jpeg fallback on older iOS Safari), all client-side
   drag to reorder / edit caption / delete, with optimistic UI
         │
         ▼  Server Action (Next.js)

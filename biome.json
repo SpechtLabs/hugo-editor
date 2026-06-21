@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!src/components/ui/**", "!next-env.d.ts"]
+    "includes": ["**", "!src/components/ui", "!next-env.d.ts", "!**/*.css", "!public"]
   },
   "formatter": {
     "enabled": true,
@@ -23,7 +23,7 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "correctness": {
         "useExhaustiveDependencies": "warn"
       }

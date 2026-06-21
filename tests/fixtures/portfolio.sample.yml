@@ -1,0 +1,37 @@
+---
+portfolio:
+  enable: true
+  title: Galerie
+  portfolio_item:
+    - name: Rankenring
+      image: "/images/rankenring.jpg.webp"
+      categories:
+        - Ring
+      content: 585/- Gelbgold
+      link: ""
+    - name: Mondstein Kette mit Iolith
+      image: "/images/mondstein-kette.webp"
+      categories:
+        - Ohrschmuck
+        - Halsschmuck
+      content: 925/- Silber
+      link: ""
+    - name: Jugendstil Haarkamm
+      image: "/images/haarkamm.jpeg.webp"
+      categories:
+        - Sonstiges
+      content: Saphir und Swiss blue Topas
+      link: ""
+      rotate: 90
+    - name: Goldplattierte Ohrstecker
+      image: images/galerie/ohrstecker-plattiert.jpg.webp
+      categories:
+        - Ohrschmuck
+      content: Detailierte Ohrstecker
+      link: "/blog/ohrstecker-goldplattiert"
+    - name: Rauchquarz Ohrhänger
+      image: images/galerie/rauch1.jpg.webp
+      categories:
+        - Ohrschmuck
+      content: Faccetierte Rauchquarze mit Gold Girlande
+      link: "#"

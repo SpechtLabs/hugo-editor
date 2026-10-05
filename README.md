@@ -43,7 +43,8 @@ token rather than linking them directly.
 - `@dnd-kit` for drag-and-drop, `yaml` for surgical data-file edits, `heic-to` for iPhone photos
 - Biome for lint/format, `bun test` for the data-file logic
 
-Local tool versions (Bun, Node, the Vercel CLI) are pinned in `mise.toml`.
+Local tool versions (Bun, Node, the Vercel CLI, the linters) are pinned in `.mise.toml`, and
+its tasks are what CI runs.
 
 ## Local development
 
@@ -51,13 +52,14 @@ You need [mise](https://mise.jdx.dev/). It provides Bun, Node, and the Vercel CL
 pinned versions.
 
 ```bash
-mise install                 # installs bun, node, vercel from mise.toml
-mise exec -- bun install     # installs project dependencies
+mise install                 # installs the tools pinned in .mise.toml
 cp .env.example .env.local   # then fill in the values (see below)
-mise exec -- bun dev         # http://localhost:3000
+mise run dev                 # installs dependencies, serves http://localhost:3000
 ```
 
-Run the tests and linter with `mise exec -- bun test` and `mise exec -- bun run lint`.
+`mise run check` runs every gate CI runs: Biome, yamllint and actionlint, the type check,
+the tests and the production build. `mise tasks` lists the single steps (`mise run test`,
+`mise run lint`, `mise run fmt`, ...).
 
 ### Configuration
 

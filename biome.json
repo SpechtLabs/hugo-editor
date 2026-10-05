@@ -7,7 +7,14 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!src/components/ui", "!next-env.d.ts", "!**/*.css", "!public"]
+    "includes": [
+      "**",
+      "!src/components/ui",
+      "!next-env.d.ts",
+      "!**/*.css",
+      "!public",
+      "!renovate.json"
+    ]
   },
   "formatter": {
     "enabled": true,

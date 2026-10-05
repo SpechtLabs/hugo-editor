@@ -13,12 +13,15 @@ store. See `README.md` for setup and the user-facing overview.
 
 ## Commands
 
-Everything runs through mise (Bun, Node, Vercel CLI are pinned in `mise.toml`):
+Everything runs through mise tasks (Bun, Node, the Vercel CLI and the linters are pinned in
+`.mise.toml`; CI runs the same tasks):
 
-- `mise exec -- bun dev` — dev server
-- `mise exec -- bun test` — data-file logic tests (`tests/portfolio.test.ts`)
-- `mise exec -- bun run lint` / `bun run format` — Biome
-- `mise exec -- bun run build` — production build
+- `mise run dev` — dev server
+- `mise run test` — data-file logic tests (`tests/portfolio.test.ts`), with coverage
+- `mise run typecheck` — tsc
+- `mise run lint` / `mise run fmt` — Biome, plus yamllint and actionlint
+- `mise run build` — production build
+- `mise run check` — all of the above, the definition of done
 
 Install tools with `mise use <tool>@<version>`; never curl/brew/global-npm them.
 

@@ -1,0 +1,80 @@
+# The data-file engine: schema, YAML edits and path mapping
+portfolio:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/lib/portfolio/**"
+
+# GitHub access: Octokit and the atomic commit primitive
+github:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/lib/github/**"
+
+# Client-side image decoding, cropping and encoding
+images:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/lib/image/**"
+          - "src/components/image-*.tsx"
+          - "src/app/api/image/**"
+
+# Sign-in: Auth.js, the proxy and the login page
+auth:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/auth.ts"
+          - "src/proxy.ts"
+          - "src/server/auth-actions.ts"
+          - "src/app/api/auth/**"
+          - "src/app/login/**"
+          - "src/types/next-auth.d.ts"
+
+# The editor UI
+ui:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/components/**"
+          - "src/app/**/*.tsx"
+          - "src/app/globals.css"
+
+# Tests
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "tests/**"
+
+# Documentation
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+
+# Build and CI plumbing
+build:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"
+          - ".mise.toml"
+          - ".pre-commit-config.yaml"
+          - ".yamllint.yaml"
+          - ".editorconfig"
+          - "biome.json"
+          - "bunfig.toml"
+          - "codecov.yml"
+          - "next.config.ts"
+          - "package.json"
+          - "bun.lock"
+          - "renovate.json"
+          - "tsconfig.json"
+
+# Add 'enhancement' to any PR whose head branch starts with `feat` or `feature`
+enhancement:
+  - head-branch:
+      - "^feat"
+      - "^feature"
+
+# Add 'bug' to any PR whose head branch starts with `fix` or `bug`
+bug:
+  - head-branch:
+      - "^fix"
+      - "^bug"

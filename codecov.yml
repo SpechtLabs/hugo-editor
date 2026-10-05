@@ -1,0 +1,16 @@
+# Codecov fails a pull request only when coverage falls below 85%, for the
+# whole project or for the lines the pull request changes. Without this, both
+# targets default to the base branch's own coverage, so a change with 95% patch
+# coverage is flagged whenever main happens to sit higher.
+#
+# bun test reports the files the tests load, the data-file logic in
+# src/lib/portfolio/, so that is what both targets measure; the UI has no
+# tests.
+coverage:
+  status:
+    project:
+      default:
+        target: 85%
+    patch:
+      default:
+        target: 85%

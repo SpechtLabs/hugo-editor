@@ -9,7 +9,7 @@
 idiomatic_version_file_enable_tools = []
 
 [tools]
-bun = "1.4.2"
+bun = "1.4.3"
 # Next.js builds and serves on Node, the same major Vercel runs the app on.
 # @types/node follows this major.
 node = "24.21.0"

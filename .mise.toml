@@ -14,7 +14,7 @@ bun = "1.4.3"
 # @types/node follows this major.
 node = "24.21.0"
 # Links the project, pulls its environment and deploys by hand (see README).
-"npm:vercel" = "62.2.0"
+"npm:vercel" = "62.7.0"
 
 # Pre-commit for Git hooks
 pre-commit = "4.6.2"
